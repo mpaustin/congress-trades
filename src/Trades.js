@@ -65,32 +65,32 @@ const Trades = () => {
         </button>
         
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '0.1fr 0.1fr 0.1fr 0.15fr 0.2fr', columnGap: '50px', rowGap: '0px' }}>
-        <div><strong>Date</strong></div>
-        <div><strong>Ticker</strong></div>
-        <div><strong>Transaction</strong></div>
-        <div style={{ textAlign: 'right' }}><strong>Total Volume Traded</strong></div>
-        <div><strong>Largest Trader</strong></div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 2fr 5fr', columnGap: '20px', rowGap: '10px', marginTop: '20px' }}>
+        <div style={{ fontWeight: 'bold' }}>Date</div>
+        <div style={{ fontWeight: 'bold' }}>Ticker</div>
+        <div style={{ fontWeight: 'bold' }}>Transaction</div>
+        <div style={{ fontWeight: 'bold', textAlign: 'right', marginRight: '5em' }}>Total Volume Traded</div>
+        <div style={{ fontWeight: 'bold' }}>Largest Trader</div>
         {
-          loading ? <div>Analyzing historical trades...</div> :
-          error ? <div>Error fetching trades: {error.message}</div> :
+          loading ? <div style={{ gridColumn: 'span 5', textAlign: 'center' }}>Analyzing historical trades...</div> :
+          error ? <div style={{ gridColumn: 'span 5', textAlign: 'center' }}>Error fetching trades: {error.message}</div> :
           <>
             {trades.purchase_summary && trades.purchase_summary.map((trade, index) => (
               <>
-                <div key={`purchase-${index}`} style={{ textAlign: 'left' }}>{trade.Trade_Date ? new Date(trade.Trade_Date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Invalid Date'}</div>
+                <div key={`purchase-${index}`}>{trade.Trade_Date ? new Date(trade.Trade_Date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Invalid Date'}</div>
                 <div>{trade.Ticker}</div>
-                <div style={{ textAlign: 'left' }}>Purchase</div>
-                <div style={{ textAlign: 'right' }}>${trade.Total_Amount ? parseFloat(trade.Total_Amount).toFixed(2).toLocaleString() : 'N/A'}</div>
-                <div style={{ textAlign: 'left' }}>{trade.Top_Trader}</div>
+                <div>Purchase</div>
+                <div style={{ textAlign: 'right', marginRight: '5em' }}>${trade.Total_Amount ? parseFloat(trade.Total_Amount).toFixed(2).toLocaleString() : 'N/A'}</div>
+                <div>{trade.Top_Trader}</div>
               </>
             ))}
             {trades.sales_summary && trades.sales_summary.map((trade, index) => (
               <>
-                <div key={`sale-${index}`} style={{ textAlign: 'left' }}>{trade.Trade_Date ? new Date(trade.Trade_Date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Invalid Date'}</div>
-                <div style={{ textAlign: 'left' }}>{trade.Ticker}</div>
-                <div style={{ textAlign: 'left' }}>Sale</div>
-                <div style={{ textAlign: 'right' }}>${trade.Total_Amount ? parseFloat(trade.Total_Amount).toFixed(2).toLocaleString() : 'N/A'}</div>
-                <div style={{ textAlign: 'left' }}>{trade.Top_Trader}</div>
+                <div key={`sale-${index}`}>{trade.Trade_Date ? new Date(trade.Trade_Date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Invalid Date'}</div>
+                <div>{trade.Ticker}</div>
+                <div>Sale</div>
+                <div style={{ textAlign: 'right', marginRight: '5em' }}>${trade.Total_Amount ? parseFloat(trade.Total_Amount).toFixed(2).toLocaleString() : 'N/A'}</div>
+                <div>{trade.Top_Trader}</div>
               </>
             ))}
           </>
