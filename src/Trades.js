@@ -19,7 +19,7 @@ const Trades = () => {
   const fetchTrades = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5001/api/trades', {
+      const response = await axios.get('http://127.0.0.1:5001/api/trades', {
         params: {
           start_date: startDate,
           end_date: endDate,
