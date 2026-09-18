@@ -1,5 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import axios from 'axios';
+
+const formatCurrency = (amount) => {
+  const value = Number(amount);
+  if (!Number.isFinite(value)) {
+    return 'N/A';
+  }
+  return value.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 2,
+  });
+};
+
+const formatDate = (date) => {
+  if (!date) {
+    return 'Invalid Date';
+  }
+
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+};
 
 const Trades = () => {
   const [trades, setTrades] = useState([]);
@@ -19,6 +43,7 @@ const Trades = () => {
   const fetchTrades = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await axios.get('http://127.0.0.1:5001/api/trades', {
         params: {
           start_date: startDate,
@@ -33,13 +58,10 @@ const Trades = () => {
     }
   };
 
-  useEffect(() => {
-  }, []);
-
   return (
     <div>
       <h1 style={{ textAlign: 'center' }}>Congress Trades</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBotton: '50px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '50px' }}>
         <label htmlFor='start-date' style={{ marginBottom: '5px' }}>Start Date</label>
         <input 
           id='start-date'
@@ -76,22 +98,22 @@ const Trades = () => {
           error ? <div style={{ gridColumn: 'span 5', textAlign: 'center' }}>Error fetching trades: {error.message}</div> :
           <>
             {trades.purchase_summary && trades.purchase_summary.map((trade, index) => (
-              <>
-                <div key={`purchase-${index}`}>{trade.Trade_Date ? new Date(trade.Trade_Date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Invalid Date'}</div>
+              <Fragment key={`purchase-${trade.Ticker}-${index}`}>
+                <div>{formatDate(trade.Trade_Date)}</div>
                 <div>{trade.Ticker}</div>
                 <div>Purchase</div>
-                <div style={{ textAlign: 'right', marginRight: '5em' }}>${trade.Total_Amount ? parseFloat(trade.Total_Amount).toFixed(2).toLocaleString() : 'N/A'}</div>
+                <div style={{ textAlign: 'right', marginRight: '5em' }}>{formatCurrency(trade.Total_Amount)}</div>
                 <div>{trade.Top_Trader}</div>
-              </>
+              </Fragment>
             ))}
             {trades.sales_summary && trades.sales_summary.map((trade, index) => (
-              <>
-                <div key={`sale-${index}`}>{trade.Trade_Date ? new Date(trade.Trade_Date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Invalid Date'}</div>
+              <Fragment key={`sale-${trade.Ticker}-${index}`}>
+                <div>{formatDate(trade.Trade_Date)}</div>
                 <div>{trade.Ticker}</div>
                 <div>Sale</div>
-                <div style={{ textAlign: 'right', marginRight: '5em' }}>${trade.Total_Amount ? parseFloat(trade.Total_Amount).toFixed(2).toLocaleString() : 'N/A'}</div>
+                <div style={{ textAlign: 'right', marginRight: '5em' }}>{formatCurrency(trade.Total_Amount)}</div>
                 <div>{trade.Top_Trader}</div>
-              </>
+              </Fragment>
             ))}
           </>
         }
